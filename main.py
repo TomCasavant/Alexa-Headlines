@@ -2,14 +2,13 @@ from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 
 import feedparser
-import json
-import requests
-import time
-import unidecode
+
+
 
 app = Flask(__name__)
 ask = Ask(app, "/")
 articles = 0
+current = 0
 @ask.launch
 def new_ask():
 	welcome = render_template('welcome')
@@ -29,12 +28,18 @@ def article_generator():
 @ask.intent("GetArticlesIntent")
 def get_articles():
     global articles
-    msg = next(articles).title
+    global current
+    current = next(articles)
+    msg = current.title
     return question(msg)
 
 @ask.intent('SummarizeIntent')
-def summarize();
-        
+def summarize():
+    global current
+    response = current.summary
+    return question(response)
+
+
 
 @ask.intent("AMAZON.HelpIntent")
 def helpme():
